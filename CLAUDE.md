@@ -27,7 +27,7 @@ FinLens is a Streamlit app with two tools behind a shared router and theme:
 app.py                 Router: st.navigation (top nav), page config, injects CSS + particles.js
 views/home.py          Hero and the two tool cards
 views/sentimentlens.py SentimentLens page (upload, analyze, chat)
-views/stocklens.py     StockLens page (sidebar settings, metrics, charts)
+views/stocklens.py     StockLens page (settings panel in the canvas, metrics, charts)
 utils/ui.py            Module icons (ICONS, icon_badge) and title_card()
 utils/data.py          yfinance price loading
 utils/stats.py         Returns, volatility, Sharpe, drawdown, moving averages
@@ -45,7 +45,7 @@ tests/                 pytest tests for ingest, store, analyze
 ## App structure
 
 - `app.py` reads `assets/style.css`, strips comments and whitespace to one line, and injects it with `st.markdown` (a blank line would end the HTML block, and `st.html` strips `<style>`). Keep `style.css` valid when minified: no `//` comments.
-- `app.py` calls `st.set_page_config` after `st.navigation` so it can open the sidebar expanded only on StockLens (`pg.title == "StockLens"`).
+- No page uses the sidebar. StockLens settings sit in a `settings_stock` panel at the top of its canvas because Streamlit persists a manually collapsed sidebar and neither `initial_sidebar_state` nor a per-page `set_page_config` reopens it on navigation.
 - Nav icons use `:material/...:` names. The same names live in `utils/ui.py` `ICONS`, so change icons in both places.
 - Each module page wraps its content in `st.container(key="canvas_sentiment")` or `"canvas_stock"` and starts with `title_card(...)`. Home cards are containers keyed `card_sentiment` and `card_stock` inside `tool_grid`.
 

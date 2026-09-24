@@ -11,30 +11,37 @@ with canvas:
     title_card("stock", "StockLens", "Enter a ticker to pull price history, moving averages, and risk stats.")
 
 
-# ---------- Sidebar inputs ----------
-with st.sidebar:
-    st.header("Settings")
-    ticker = st.text_input("Ticker symbol", value="AAPL").upper().strip()
+# ---------- Settings panel (top of the canvas) ----------
+with canvas:
+    with st.container(key="settings_stock"):
+        top = st.columns(3, gap="medium", vertical_alignment="bottom")
+        with top[0]:
+            ticker = st.text_input("Ticker symbol", value="AAPL").upper().strip()
+        with top[1]:
+            compare_mode = st.checkbox("Compare with another ticker")
+        ticker2 = ""
+        with top[2]:
+            if compare_mode:
+                ticker2 = st.text_input("Compare against", value="MSFT").upper().strip()
 
-    compare_mode = st.checkbox("Compare with another ticker")
-    ticker2 = ""
-    if compare_mode:
-        ticker2 = st.text_input("Compare against", value="MSFT").upper().strip()
-
-    default_start = date.today() - timedelta(days=5 * 365)
-    start_date = st.date_input(
-        "Start date", value=default_start,
-        min_value=date(1990, 1, 1), max_value=date.today()
-    )
-    end_date = st.date_input(
-        "End date", value=date.today(),
-        min_value=date(1990, 1, 1), max_value=date.today()
-    )
-
-    ma_short = st.number_input("Short moving average (days)", min_value=5, max_value=100, value=50)
-    ma_long = st.number_input("Long moving average (days)", min_value=50, max_value=400, value=200)
-
-    run = st.button("Load Data", type="primary")
+        bottom = st.columns([2, 2, 2, 2, 1.5], gap="medium", vertical_alignment="bottom")
+        default_start = date.today() - timedelta(days=5 * 365)
+        with bottom[0]:
+            start_date = st.date_input(
+                "Start date", value=default_start,
+                min_value=date(1990, 1, 1), max_value=date.today()
+            )
+        with bottom[1]:
+            end_date = st.date_input(
+                "End date", value=date.today(),
+                min_value=date(1990, 1, 1), max_value=date.today()
+            )
+        with bottom[2]:
+            ma_short = st.number_input("Short moving average (days)", min_value=5, max_value=100, value=50)
+        with bottom[3]:
+            ma_long = st.number_input("Long moving average (days)", min_value=50, max_value=400, value=200)
+        with bottom[4]:
+            run = st.button("Load Data", type="primary", use_container_width=True)
 
 
 def render_ticker_panel(ticker, data, ma_short, ma_long):
@@ -91,4 +98,4 @@ with canvas:
                 else:
                     render_ticker_panel(ticker, loaded[ticker], ma_short, ma_long)
     else:
-        st.info("Set your ticker(s) and date range in the sidebar, then click **Load Data**.")
+        st.info("Set your ticker(s) and date range in the settings panel above, then click **Load Data**.")
