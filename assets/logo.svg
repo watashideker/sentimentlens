@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="FinLens logo">
+  <circle cx="26" cy="26" r="18" fill="#eaf4ff" stroke="#1f6feb" stroke-width="4"/>
+  <polyline points="13,32 20,25 26,29 38,17" fill="none" stroke="#2e9e5b" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/>
+  <line x1="39" y1="39" x2="56" y2="56" stroke="#1f6feb" stroke-width="6" stroke-linecap="round"/>
+</svg>

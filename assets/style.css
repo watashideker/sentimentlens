@@ -1,0 +1,137 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap');
+
+:root {
+  --fl-bg: #0B1220;
+  --fl-surface: #111A2E;
+  --fl-emerald: #10B981;
+  --fl-blue: #3B82F6;
+  --fl-border: rgba(148, 163, 184, 0.18);
+  --fl-muted: #94A3B8;
+}
+
+html, body, .stApp, [class*="st-"]:not([data-testid="stIconMaterial"]):not([class*="material"]) {
+  font-family: 'Inter', -apple-system, 'Segoe UI', sans-serif;
+}
+
+/* Background lives on <html> so the particle canvas (z-index -1) sits above it, below the app */
+html {
+  background-color: var(--fl-bg);
+  background-image:
+    radial-gradient(ellipse 60% 380px at 20% 0%, rgba(16, 185, 129, 0.16), transparent 70%),
+    radial-gradient(ellipse 60% 380px at 80% 0%, rgba(59, 130, 246, 0.16), transparent 70%),
+    linear-gradient(rgba(148, 163, 184, 0.045) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(148, 163, 184, 0.045) 1px, transparent 1px);
+  background-size: 100% 100%, 100% 100%, 40px 40px, 40px 40px;
+  background-repeat: no-repeat, no-repeat, repeat, repeat;
+}
+.stApp { background: transparent; }
+[data-testid="stHeader"] { background: transparent; }
+[data-testid="stSidebar"] { background: var(--fl-surface); border-right: 1px solid var(--fl-border); }
+
+/* Hero */
+.finlens-hero {
+  position: relative; text-align: center; padding: 2.5rem 1rem 2rem; overflow: hidden;
+}
+.finlens-hero-chart {
+  position: absolute; inset: 0; width: 100%; height: 100%; z-index: 0; pointer-events: none;
+}
+.finlens-hero > *:not(.finlens-hero-chart) { position: relative; z-index: 1; }
+.finlens-hero h1.finlens-title {
+  margin: 0.5rem 0 0.25rem; padding: 0;
+  font-size: clamp(2.5rem, 8vw, 4.25rem); font-weight: 800; letter-spacing: -0.03em;
+  background: linear-gradient(90deg, #10B981, #3B82F6);
+  -webkit-background-clip: text; background-clip: text;
+  -webkit-text-fill-color: transparent; color: transparent;
+}
+.finlens-hero p.finlens-tagline {
+  font-size: clamp(1.05rem, 2.6vw, 1.35rem); line-height: 1.7; font-weight: 500;
+  color: var(--fl-muted); margin: 0.5rem auto 0; max-width: 40rem; letter-spacing: 0.01em;
+}
+.finlens-hero p.finlens-tagline span {
+  display: inline-block; margin: 0.35rem 0.25rem 0; padding: 0.2rem 0.9rem;
+  border: 1px solid var(--fl-border); border-radius: 999px;
+  background: rgba(255, 255, 255, 0.03); font-size: 0.92em;
+}
+.finlens-hero p.finlens-tagline em {
+  font-style: normal; font-weight: 700;
+  background: linear-gradient(90deg, #10B981, #3B82F6);
+  -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+}
+
+/* Glassy cards: home tool cards and metrics */
+.st-key-card_sentiment, .st-key-card_stock,
+[data-testid="stMetric"] {
+  background: linear-gradient(145deg, rgba(17, 26, 46, 0.85), rgba(11, 18, 32, 0.7));
+  border: 1px solid var(--fl-border);
+  border-radius: 16px;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.25);
+}
+.st-key-card_sentiment, .st-key-card_stock {
+  padding: 1.5rem; transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+}
+.st-key-card_sentiment:hover, .st-key-card_stock:hover {
+  transform: translateY(-4px);
+  border-color: rgba(16, 185, 129, 0.55);
+  box-shadow: 0 10px 34px rgba(16, 185, 129, 0.18), 0 4px 24px rgba(0, 0, 0, 0.3);
+}
+.st-key-card_sentiment h3, .st-key-card_stock h3 { margin-top: 0; }
+
+[data-testid="stMetric"] { padding: 1rem 1.25rem; }
+[data-testid="stMetricLabel"] { color: var(--fl-muted); }
+[data-testid="stMetricValue"], [data-testid="stMetricValue"] * {
+  font-family: 'JetBrains Mono', ui-monospace, monospace; font-weight: 600;
+}
+
+/* Buttons */
+.stButton > button, .stDownloadButton > button, [data-testid="stPageLink"] a,
+[data-testid="stBaseButton-primary"], [data-testid="stBaseButton-secondary"] {
+  border-radius: 999px; font-weight: 600; transition: transform 0.15s ease, box-shadow 0.15s ease, background-color 0.15s ease;
+}
+.stButton > button[kind="primary"], [data-testid="stBaseButton-primary"] {
+  background: var(--fl-emerald); border: 1px solid var(--fl-emerald); color: #04130C;
+}
+.stButton > button[kind="primary"]:hover, [data-testid="stBaseButton-primary"]:hover {
+  background: #34D399; border-color: #34D399; color: #04130C;
+  transform: translateY(-1px); box-shadow: 0 6px 18px rgba(16, 185, 129, 0.35);
+}
+[data-testid="stPageLink"] a {
+  border: 1px solid var(--fl-border); background: rgba(16, 185, 129, 0.08);
+}
+[data-testid="stPageLink"] a:hover {
+  border-color: var(--fl-emerald); background: rgba(16, 185, 129, 0.16);
+  box-shadow: 0 6px 18px rgba(16, 185, 129, 0.2);
+}
+
+/* Numbers in mono */
+[data-testid="stDataFrame"], code { font-family: 'JetBrains Mono', ui-monospace, monospace; }
+
+/* Footer */
+.finlens-footer {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 99; pointer-events: none;
+  text-align: center; font-size: 0.8rem; color: var(--fl-muted); padding: 0.6rem 1rem;
+  background: linear-gradient(to top, var(--fl-bg) 60%, transparent);
+}
+.finlens-footer::before {
+  content: ""; display: block; width: min(90%, 720px); margin: 0 auto 0.5rem;
+  border-top: 1px solid var(--fl-border);
+}
+[data-testid="stMainBlockContainer"] { padding-bottom: 5rem; }
+
+@media (max-width: 640px) {
+  .finlens-hero { padding: 1.5rem 0.5rem 1.25rem; }
+  .st-key-card_sentiment, .st-key-card_stock { padding: 1.1rem; }
+  .finlens-footer { font-size: 0.72rem; }
+}
+@media (prefers-reduced-motion: reduce) {
+  * { transition: none !important; }
+}
+
+/* st.html wrappers must not add gaps to the page flow */
+[data-testid="stElementContainer"]:has(.finlens-footer),
+[data-testid="stElementContainer"]:has(> [data-testid="stHtml"]:empty) {
+  position: absolute; height: 0; margin: 0; padding: 0; overflow: visible;
+}
+
+.finlens-hero h1 a, .finlens-hero [data-testid="stHeaderActionElements"] { display: none; }
