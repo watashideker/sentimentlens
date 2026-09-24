@@ -10,6 +10,7 @@ import streamlit as st
 import analyze
 import ingest
 import store
+from utils.ui import title_card
 
 BADGE_COLORS = {"positive": "#2e9e5b", "neutral": "#8a8f98", "negative": "#d64545"}
 PLACEHOLDER_HINTS = ("your", "here", "xxxx", "changeme", "placeholder", "<", "...")
@@ -132,58 +133,58 @@ def render_chat_message(msg: dict) -> None:
                     st.text(chunk.text)
 
 
-st.title("SentimentLens")
-st.caption("Upload a document to know its sentiment")
+with st.container(key="canvas_sentiment"):
+    title_card("sentiment", "SentimentLens", "Upload a document to know its sentiment")
 
-uploaded = st.file_uploader("Document", type=["pdf", "docx", "txt"], label_visibility="collapsed")
+    uploaded = st.file_uploader("Document", type=["pdf", "docx", "txt"], label_visibility="collapsed")
 
-if uploaded is None:
-    st.session_state.pop("docs", None)
-    st.session_state.pop("current", None)
-    st.stop()
+    if uploaded is None:
+        st.session_state.pop("docs", None)
+        st.session_state.pop("current", None)
+        st.stop()
 
-doc = load_document(uploaded)
-if doc is None:
-    st.stop()
-st.session_state["current"] = doc
+    doc = load_document(uploaded)
+    if doc is None:
+        st.stop()
+    st.session_state["current"] = doc
 
-st.success(f"**{uploaded.name}** — {len(doc['chunks'])} chunks")
+    st.success(f"**{uploaded.name}** — {len(doc['chunks'])} chunks")
 
-problem = api_key_problem()
-if problem:
-    st.error(problem)
+    problem = api_key_problem()
+    if problem:
+        st.error(problem)
 
-if st.button("Analyze", type="primary", disabled=problem is not None):
-    try:
-        with st.spinner("Analyzing sentiment..."):
-            doc["result"] = analyze.analyze_document(doc["collection"])
-    except Exception as e:
-        show_api_error(e)
+    if st.button("Analyze", type="primary", disabled=problem is not None):
+        try:
+            with st.spinner("Analyzing sentiment..."):
+                doc["result"] = analyze.analyze_document(doc["collection"])
+        except Exception as e:
+            show_api_error(e)
 
-if doc["result"]:
-    render_result(doc["result"])
+    if doc["result"]:
+        render_result(doc["result"])
 
-st.divider()
-st.subheader("Ask about the document")
+    st.divider()
+    st.subheader("Ask about the document")
 
-for msg in doc["chat"]:
-    render_chat_message(msg)
+    for msg in doc["chat"]:
+        render_chat_message(msg)
 
-question = st.chat_input("Ask a question about this document", disabled=problem is not None)
-if question:
-    user_msg = {"role": "user", "content": question}
-    doc["chat"].append(user_msg)
-    render_chat_message(user_msg)
-    try:
-        with st.spinner("Thinking..."):
-            answer = analyze.answer_question(doc["collection"], question)
-        reply = {
-            "role": "assistant",
-            "content": answer,
-            "cited": cited_chunks(answer, doc["chunks"]),
-        }
-        doc["chat"].append(reply)
-        render_chat_message(reply)
-    except Exception as e:
-        doc["chat"].pop()  # don't keep an unanswered question in the history
-        show_api_error(e)
+    question = st.chat_input("Ask a question about this document", disabled=problem is not None)
+    if question:
+        user_msg = {"role": "user", "content": question}
+        doc["chat"].append(user_msg)
+        render_chat_message(user_msg)
+        try:
+            with st.spinner("Thinking..."):
+                answer = analyze.answer_question(doc["collection"], question)
+            reply = {
+                "role": "assistant",
+                "content": answer,
+                "cited": cited_chunks(answer, doc["chunks"]),
+            }
+            doc["chat"].append(reply)
+            render_chat_message(reply)
+        except Exception as e:
+            doc["chat"].pop()  # don't keep an unanswered question in the history
+            show_api_error(e)

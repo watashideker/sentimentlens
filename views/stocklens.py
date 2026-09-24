@@ -4,9 +4,12 @@ from datetime import date, timedelta
 from utils.data import load_price_data
 from utils.stats import compute_stats, add_moving_averages
 from utils.charts import price_ma_chart, returns_histogram, normalized_comparison_chart
+from utils.ui import title_card
 
-st.title("StockLens")
-st.caption("Enter a ticker to pull price history, moving averages, and risk stats.")
+canvas = st.container(key="canvas_stock")
+with canvas:
+    title_card("stock", "StockLens", "Enter a ticker to pull price history, moving averages, and risk stats.")
+
 
 # ---------- Sidebar inputs ----------
 with st.sidebar:
@@ -56,35 +59,36 @@ def render_ticker_panel(ticker, data, ma_short, ma_long):
 
 
 # ---------- Main logic ----------
-if run:
-    if not ticker:
-        st.warning("Enter a ticker symbol to continue.")
-    else:
-        tickers_to_load = [ticker]
-        if compare_mode and ticker2:
-            tickers_to_load.append(ticker2)
-
-        with st.spinner("Pulling data..."):
-            loaded = {t: load_price_data(t, start_date, end_date) for t in tickers_to_load}
-
-        missing = [t for t, d in loaded.items() if d is None or len(d) < ma_long]
-        if missing:
-            st.error(
-                f"Not enough data for: {', '.join(missing)}. "
-                "Check the symbol, or widen the date range."
-            )
+with canvas:
+    if run:
+        if not ticker:
+            st.warning("Enter a ticker symbol to continue.")
         else:
+            tickers_to_load = [ticker]
             if compare_mode and ticker2:
-                st.subheader("Normalized Comparison (rebased to 100)")
-                st.plotly_chart(normalized_comparison_chart(loaded), use_container_width=True)
-                st.divider()
+                tickers_to_load.append(ticker2)
 
-                col1, col2 = st.columns(2)
-                with col1:
-                    render_ticker_panel(ticker, loaded[ticker], ma_short, ma_long)
-                with col2:
-                    render_ticker_panel(ticker2, loaded[ticker2], ma_short, ma_long)
+            with st.spinner("Pulling data..."):
+                loaded = {t: load_price_data(t, start_date, end_date) for t in tickers_to_load}
+
+            missing = [t for t, d in loaded.items() if d is None or len(d) < ma_long]
+            if missing:
+                st.error(
+                    f"Not enough data for: {', '.join(missing)}. "
+                    "Check the symbol, or widen the date range."
+                )
             else:
-                render_ticker_panel(ticker, loaded[ticker], ma_short, ma_long)
-else:
-    st.info("Set your ticker(s) and date range in the sidebar, then click **Load Data**.")
+                if compare_mode and ticker2:
+                    st.subheader("Normalized Comparison (rebased to 100)")
+                    st.plotly_chart(normalized_comparison_chart(loaded), use_container_width=True)
+                    st.divider()
+
+                    col1, col2 = st.columns(2)
+                    with col1:
+                        render_ticker_panel(ticker, loaded[ticker], ma_short, ma_long)
+                    with col2:
+                        render_ticker_panel(ticker2, loaded[ticker2], ma_short, ma_long)
+                else:
+                    render_ticker_panel(ticker, loaded[ticker], ma_short, ma_long)
+    else:
+        st.info("Set your ticker(s) and date range in the sidebar, then click **Load Data**.")
