@@ -1,0 +1,8 @@
+streamlit
+anthropic
+chromadb
+pypdf
+python-docx
+pydantic
+python-dotenv
+pytest
