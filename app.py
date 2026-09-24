@@ -6,9 +6,9 @@ from pathlib import Path
 import streamlit as st
 
 pages = [
-    st.Page("views/home.py", title="Home", icon="🏠", default=True),
-    st.Page("views/sentimentlens.py", title="SentimentLens", icon="🔍"),
-    st.Page("views/stocklens.py", title="StockLens", icon="📈"),
+    st.Page("views/home.py", title="Home", icon=":material/home:", default=True),
+    st.Page("views/sentimentlens.py", title="SentimentLens", icon=":material/find_in_page:"),
+    st.Page("views/stocklens.py", title="StockLens", icon=":material/candlestick_chart:"),
 ]
 pg = st.navigation(pages, position="top")
 # StockLens keeps its settings in the sidebar, so open it there; other pages keep the default

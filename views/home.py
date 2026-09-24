@@ -3,6 +3,8 @@ from pathlib import Path
 
 import streamlit as st
 
+from utils.ui import icon_badge
+
 logo_b64 = base64.b64encode((Path(__file__).parent.parent / "assets" / "logo.svg").read_bytes()).decode()
 
 HERO_CHART = (
@@ -28,14 +30,19 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-left, right = st.columns(2, gap="large")
-with left:
-    with st.container(key="card_sentiment"):
-        st.markdown("### :material/manage_search: SentimentLens")
-        st.write("Upload a document to know its sentiment")
-        st.page_link("views/sentimentlens.py", label="Open SentimentLens", icon=":material/open_in_new:", use_container_width=True)
-with right:
-    with st.container(key="card_stock"):
-        st.markdown("### :material/candlestick_chart: StockLens")
-        st.write("Price history, moving averages and risk stats for any ticker")
-        st.page_link("views/stocklens.py", label="Open StockLens", icon=":material/open_in_new:", use_container_width=True)
+TOOLS = [
+    ("sentiment", "SentimentLens", "Upload a document to know its sentiment", "views/sentimentlens.py"),
+    ("stock", "StockLens", "Price history, moving averages and risk stats for any ticker", "views/stocklens.py"),
+]
+
+# Each card is one HTML body plus a page_link that CSS stretches over the whole card
+with st.container(key="tool_grid"):
+    for module, name, blurb, page in TOOLS:
+        with st.container(key=f"card_{module}"):
+            st.markdown(
+                f'<div class="fl-card-body">{icon_badge(module)}<div class="fl-card-name">{name}</div>'
+                f'<p class="fl-card-desc">{blurb}</p>'
+                f'<div class="fl-card-open">Open {name}<span class="material-symbols-rounded">arrow_forward</span></div></div>',
+                unsafe_allow_html=True,
+            )
+            st.page_link(page, label=f"Open {name}")
